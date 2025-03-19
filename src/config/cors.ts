@@ -22,7 +22,7 @@ import { CorsOptions } from "cors";
 
 export const corsConfig: CorsOptions = {
   origin: function (origin, callback) {
-    const whiteList: string[] = [process.env.FRONTEND_URL];
+    const whiteList: string[] = ['https://marmores-e-granitos.vercel.app', 'http://localhost:3000'];
 
     // Permitir undefined (caso de testes locais ou API interna)
     if (process.env.NODE_ENV === "development") {
