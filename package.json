@@ -1,0 +1,49 @@
+{
+  "name": "back-end",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.ts",
+    "dev:api": "nodemon src/index.ts --api",
+    "start": "node dist/index.js",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "Eps Soluções",
+  "license": "ISC",
+  "description": "Projeto gerenciador de redes sociais.",
+  "dependencies": {
+    "@types/jsonwebtoken": "^9.0.7",
+    "are-we-there-yet": "^4.0.2",
+    "bcrypt": "^5.1.1",
+    "cloudinary": "^2.5.1",
+    "colors": "^1.4.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "express-validator": "^7.2.0",
+    "formidable": "^3.5.2",
+    "gauge": "^5.0.2",
+    "glob": "^11.0.0",
+    "inflight": "^1.0.6",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.14.0",
+    "mongoose": "^8.8.3",
+    "npm": "^10.9.2",
+    "npmlog": "^7.0.1",
+    "rimraf": "^6.0.1",
+    "slug": "^2.1.1",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "@types/asap": "^2.0.2",
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/formidable": "^3.4.5",
+    "@types/slug": "^5.0.9",
+    "dotenv": "^16.4.7",
+    "nodemon": "^3.1.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}
