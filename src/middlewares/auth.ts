@@ -17,7 +17,7 @@ export const autenticate = async (
 ) => {
   const bearer = req.headers.authorization;
 
-  if (!bearer || !bearer.startsWith("Bearer ")) {
+  if (!bearer || !bearer.startsWith("Bearer")) {
     res.status(401).json({ error: "Não Autorizado" });
     return;
   }
