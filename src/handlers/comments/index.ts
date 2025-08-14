@@ -52,22 +52,70 @@ export const createComment = async (req: Request, res: Response): Promise<void> 
   }
 };
   
-  export const getComments = async (req: Request, res: Response): Promise<void> => {
-    try {
+  // export const getComments = async (req: Request, res: Response): Promise<void> => {
+  //   try {
       
-      const comments = await Comments.find()
+  //     const comments = await Comments.find()
        
-      if (!comments || comments.length === 0) {
-        res.status(404).json({ error: "Nenhum produto encontrado." });
+  //     if (!comments || comments.length === 0) {
+  //       res.status(404).json({ error: "Nenhum produto encontrado." });
+  //       return;
+  //     }
+  
+  //     res.status(200).json(comments);
+  //   } catch (error) {
+  //     console.error("Erro ao buscar produtos:", error);
+  //     res.status(500).json({ error: "Erro ao buscar produtos, tente novamente mais tarde." });
+  //   }
+  // };
+  export const getComments = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const limitParam = req.query.limit as string;
+    const pageParam = req.query.page as string;
+
+    // 🔹 Se não houver paginação, retorna todos
+    if (!limitParam && !pageParam) {
+      const comments = await Comments.find();
+      if (!comments.length) {
+        res.status(404).json({ error: "Nenhum comentário encontrado." });
         return;
       }
-  
-      res.status(200).json(comments);
-    } catch (error) {
-      console.error("Erro ao buscar produtos:", error);
-      res.status(500).json({ error: "Erro ao buscar produtos, tente novamente mais tarde." });
+      res.status(200).json({
+        comments,
+        total: comments.length,
+        totalPages: 1,
+        currentPage: 1
+      });
+      return;
     }
-  };
+
+    // 🔹 Paginação
+    const limit = parseInt(limitParam) || 10;
+    const page = parseInt(pageParam) || 1;
+    const skip = (page - 1) * limit;
+
+    const [comments, total] = await Promise.all([
+      Comments.find().skip(skip).limit(limit),
+      Comments.countDocuments()
+    ]);
+
+    if (!comments.length) {
+      res.status(404).json({ error: "Nenhum comentário encontrado." });
+      return;
+    }
+
+    res.status(200).json({
+      comments,
+      total,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page
+    });
+  } catch (error) {
+    console.error("Erro ao buscar comentários:", error);
+    res.status(500).json({ error: "Erro ao buscar comentários, tente novamente mais tarde." });
+  }
+};
+
 
   export const getCommentsByProductId = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params; // Aqui o "id" é o ID do produto

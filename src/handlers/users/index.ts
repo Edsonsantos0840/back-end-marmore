@@ -46,19 +46,66 @@ export const createUsers = async (req: Request, res: Response): Promise<void> =>
     res.json(req.user);
   };
 
+// export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
+//   try {
+//     // 👉 Lê o limite da query string, ou usa 10 como padrão
+//     const limit = parseInt(req.query.limit as string) || 10;
+
+//     const users = await User.find().limit(limit);
+
+//     if (!users || users.length === 0) {
+//       res.status(404).json({ error: "Nenhum usuário encontrado." });
+//       return;
+//     }
+
+//     res.status(200).json(users);
+//   } catch (error) {
+//     console.error("Erro ao buscar usuários:", error);
+//     res.status(500).json({ error: "Erro ao buscar usuários. Tente novamente mais tarde." });
+//   }
+// };
 export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
   try {
-    // 👉 Lê o limite da query string, ou usa 10 como padrão
-    const limit = parseInt(req.query.limit as string) || 10;
+    const limitParam = req.query.limit as string;
+    const pageParam = req.query.page as string;
 
-    const users = await User.find().limit(limit);
+    // Se não passar paginação, busca todos
+    if (!limitParam && !pageParam) {
+      const users = await User.find();
+      if (!users.length) {
+        res.status(404).json({ error: "Nenhum usuário encontrado." });
+        return;
+      }
+      res.status(200).json({
+        users,
+        total: users.length,
+        totalPages: 1,
+        currentPage: 1
+      });
+      return;
+    }
 
-    if (!users || users.length === 0) {
+    // Caso tenha paginação
+    const limit = parseInt(limitParam) || 10;
+    const page = parseInt(pageParam) || 1;
+    const skip = (page - 1) * limit;
+
+    const [users, total] = await Promise.all([
+      User.find().skip(skip).limit(limit),
+      User.countDocuments()
+    ]);
+
+    if (!users.length) {
       res.status(404).json({ error: "Nenhum usuário encontrado." });
       return;
     }
 
-    res.status(200).json(users);
+    res.status(200).json({
+      users,
+      total,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page
+    });
   } catch (error) {
     console.error("Erro ao buscar usuários:", error);
     res.status(500).json({ error: "Erro ao buscar usuários. Tente novamente mais tarde." });
