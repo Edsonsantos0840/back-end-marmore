@@ -1,7 +1,7 @@
 import { CorsOptions } from "cors";
 
 const whiteList: string[] = [
-  'https://marmores-e-granitos.vercel.app',
+  'https://site-marmormore.vercel.app',
   'http://localhost:3000',
   process.env.FRONTEND_URL
 ];
