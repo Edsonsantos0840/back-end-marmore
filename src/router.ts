@@ -6,7 +6,7 @@ import { autenticate } from "./middlewares/auth";
 import { createUsers, deleteUser,  getAllUsers,  getUserAuth, getUserById, updateUser } from "./handlers/users";
 import { createProduct, getProducts, getProductById, getProductsByCategory, updateProduct, deleteProduct } from "./handlers/product";
 import { createComment, deleteComment, getComments, getCommentsByProductId, updateComment } from "./handlers/comments";
-import { createLike, deleteLikes, getLikes } from "./handlers/likes";
+import { createLike, deleteLikes, getLikes, getLikesByProduct } from "./handlers/likes";
 
 
 const router = Router();
@@ -41,6 +41,8 @@ router.get("/products/:id", getProductById);
 router.get("/products/category/:category", getProductsByCategory);
 
 router.get("/likes", getLikes);
+
+router.get("/likes/product/:productId", getLikesByProduct);
 
 router.get("/comments", getComments);
 
