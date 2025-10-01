@@ -100,24 +100,32 @@ export const getLikesByProduct = async (req: Request, res: Response): Promise<vo
 };
 
 // Deletar Like
+// DELETE /likes/:postId
 export const deleteLikes = async (req: Request, res: Response) => {
-  const { id } = req.params; // ID do like na URL
-
   try {
-    const like = await Likes.findByIdAndDelete(id);
+    const userId = req.user?.id; // usuário logado pelo token
+    const { postId } = req.params;
 
-    if (!like) {
-      res.status(404).json({ error: "Like não encontrado." });
-      return;
+    if (!userId) {
+      return res.status(401).json({ error: "Usuário não autenticado" });
     }
 
-    // remove a referência do like no produto
-    await Product.findByIdAndUpdate(like.product, { $pull: { likes: like._id } });
+    const existingLike = await prisma.like.findFirst({
+      where: { postId: Number(postId), userId },
+    });
 
-    res.status(200).json({ message: "Like removido com sucesso." });
+    if (!existingLike) {
+      return res.status(404).json({ error: "Like não encontrado" });
+    }
+
+    await prisma.like.delete({
+      where: { id: existingLike.id },
+    });
+
+    return res.status(200).json({ message: "Like removido com sucesso" });
   } catch (error) {
-    console.error("Erro ao excluir like:", error);
-    res.status(500).json({ error: "Erro interno ao excluir like." });
+    console.error("Erro ao deletar like:", error);
+    return res.status(500).json({ error: "Erro interno ao deletar like" });
   }
 };
 
