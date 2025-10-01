@@ -100,7 +100,7 @@ export const getLikesByProduct = async (req: Request, res: Response): Promise<vo
 };
 
 // Deletar Like
-export const deleteLike = async (req: Request, res: Response) => {
+export const deleteLikes = async (req: Request, res: Response) => {
   const { id } = req.params; // ID do like na URL
 
   try {
