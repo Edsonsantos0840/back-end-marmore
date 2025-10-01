@@ -100,27 +100,30 @@ export const getLikesByProduct = async (req: Request, res: Response): Promise<vo
 };
 
 // Deletar Like
-// DELETE /likes/:postId
 export const deleteLikes = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?.id; // usuário logado pelo token
-    const { postId } = req.params;
+    const userId = (req as any).user?.id; // usuário logado pelo token
+    const { productId } = req.params;
 
     if (!userId) {
       return res.status(401).json({ error: "Usuário não autenticado" });
     }
 
-    const existingLike = await prisma.like.findFirst({
-      where: { postId: Number(postId), userId },
-    });
+    // Verifica se existe o like do usuário para esse produto
+    const existingLike = await Likes.findOne({ user: userId, product: productId });
 
     if (!existingLike) {
       return res.status(404).json({ error: "Like não encontrado" });
     }
 
-    await prisma.like.delete({
-      where: { id: existingLike.id },
-    });
+    // Remove o like
+    await Likes.findByIdAndDelete(existingLike._id);
+
+    // Remove a referência do produto
+    await Product.findByIdAndUpdate(
+      productId,
+      { $pull: { likes: existingLike._id } }
+    );
 
     return res.status(200).json({ message: "Like removido com sucesso" });
   } catch (error) {
