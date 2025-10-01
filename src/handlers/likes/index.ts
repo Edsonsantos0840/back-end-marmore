@@ -93,6 +93,41 @@ export const createLike = async (req: Request, res: Response) => {
   
       await Likes.findByIdAndDelete(id);
       await Product.findByIdAndUpdate(likes.product, { $pull: { likes: id } });
+
+      import { Request, Response } from "express";
+import Likes from "../../models/Likes";
+import Product from "../../models/Product";
+
+export const getLikesByProduct = async (req: Request, res: Response): Promise<void> => {
+  const { productId } = req.params; // id do produto vindo da URL
+
+  if (!productId) {
+    res.status(400).json({ error: "ID do produto não fornecido." });
+    return;
+  }
+
+  try {
+    // verifica se o produto existe
+    const productExists = await Product.findById(productId);
+    if (!productExists) {
+      res.status(404).json({ error: "Produto não encontrado." });
+      return;
+    }
+
+    // busca os likes vinculados a esse produto
+    const likes = await Likes.find({ product: productId }).populate("user", "name email"); 
+    // `populate` opcional, caso queira trazer dados do usuário
+
+    res.status(200).json({
+      totalLikes: likes.length,
+      likes,
+    });
+  } catch (error) {
+    console.error("Erro ao buscar likes por produto:", error);
+    res.status(500).json({ error: "Erro ao buscar likes, tente novamente mais tarde." });
+  }
+};
+
   
       res.status(200).json({ message: "Comentário excluído com sucesso." });
     } catch (error) {
