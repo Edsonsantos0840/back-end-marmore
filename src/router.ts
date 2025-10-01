@@ -56,7 +56,7 @@ router.put("/product/comments/:id", authLogin, updateComment);
 
 router.delete("/product/comments/:id", authLogin, deleteComment);
 
-router.delete("/product/likes/:id", authLogin, deleteLikes);
+router.delete("/likes/:id", authLogin, deleteLikes);
 
 router.delete("/product/:id", authLogin, deleteProduct);
 
