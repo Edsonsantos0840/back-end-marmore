@@ -100,27 +100,24 @@ export const getLikesByProduct = async (req: Request, res: Response): Promise<vo
 };
 
 // Deletar Like
-export const deleteLikes = async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.params;
-
-  if (!id) {
-    res.status(400).json({ error: "ID do like não fornecido." });
-    return;
-  }
+export const deleteLike = async (req: Request, res: Response) => {
+  const { id } = req.params; // ID do like na URL
 
   try {
-    const likes = await Likes.findById(id);
-    if (!likes) {
+    const like = await Likes.findByIdAndDelete(id);
+
+    if (!like) {
       res.status(404).json({ error: "Like não encontrado." });
       return;
     }
 
-    await Likes.findByIdAndDelete(id);
-    await Product.findByIdAndUpdate(likes.product, { $pull: { likes: id } });
+    // remove a referência do like no produto
+    await Product.findByIdAndUpdate(like.product, { $pull: { likes: like._id } });
 
-    res.status(200).json({ message: "Like excluído com sucesso." });
+    res.status(200).json({ message: "Like removido com sucesso." });
   } catch (error) {
     console.error("Erro ao excluir like:", error);
     res.status(500).json({ error: "Erro interno ao excluir like." });
   }
 };
+
