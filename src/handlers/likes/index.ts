@@ -99,31 +99,29 @@ export const getLikesByProduct = async (req: Request, res: Response): Promise<vo
   }
 };
 
-// Deletar Like
+// DELETE /likes/:likeId
 export const deleteLikes = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user?.id; // usuário logado pelo token
-    const { productId } = req.params;
+    const userId = (req as any).user?.id;
+    const { likeId } = req.params;
 
     if (!userId) {
       return res.status(401).json({ error: "Usuário não autenticado" });
     }
 
-    // Verifica se existe o like do usuário para esse produto
-    const existingLike = await Likes.findOne({ user: userId, product: productId });
-
+    // procura o like
+    const existingLike = await Likes.findOne({ _id: likeId, user: userId });
     if (!existingLike) {
       return res.status(404).json({ error: "Like não encontrado" });
     }
 
-    // Remove o like
-    await Likes.findByIdAndDelete(existingLike._id);
+    // remove o like
+    await Likes.findByIdAndDelete(likeId);
 
-    // Remove a referência do produto
-    await Product.findByIdAndUpdate(
-      productId,
-      { $pull: { likes: existingLike._id } }
-    );
+    // remove do produto
+    await Product.findByIdAndUpdate(existingLike.product, {
+      $pull: { likes: likeId },
+    });
 
     return res.status(200).json({ message: "Like removido com sucesso" });
   } catch (error) {
