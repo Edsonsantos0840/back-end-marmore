@@ -40,9 +40,9 @@ router.get("/products/:id", getProductById);
 
 router.get("/products/category/:category", getProductsByCategory);
 
-router.get("/likes", getLikes);
-
 router.get("/likes/product/:productId", getLikesByProduct);
+
+router.get("/likes", getLikes);
 
 router.get("/comments", getComments);
 
