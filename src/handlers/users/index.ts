@@ -124,7 +124,6 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
   return;
 }
 
-
   try {
       const user = await User.findById(id);
       if (!user) {
