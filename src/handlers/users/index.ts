@@ -136,6 +136,12 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
   const { id } = req.params; // Obtém o ID do usuário da URL
   const { name, image }: { name: string, image: string } = req.body;
 
+  if (!name) {
+  res.status(400).json({ error: "Nome é obrigatório" });
+  return;
+}
+
+
   try {
       const user = await User.findById(id);
       if (!user) {
