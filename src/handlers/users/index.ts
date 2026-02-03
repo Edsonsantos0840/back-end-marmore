@@ -134,7 +134,7 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
 
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params; // Obtém o ID do usuário da URL
-  const { name, email, image }: { name: string, email: string, image: string } = req.body;
+  const { name, image }: { name: string, image: string } = req.body;
 
   try {
       const user = await User.findById(id);
@@ -144,7 +144,6 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
       }
 
       user.name = name || user.name;
-      user.email = email || user.email;
       user.image = image || user.image;
 
       await user.save();
