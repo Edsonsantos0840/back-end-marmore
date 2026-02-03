@@ -46,24 +46,7 @@ export const createUsers = async (req: Request, res: Response): Promise<void> =>
     res.json(req.user);
   };
 
-// export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
-//   try {
-//     // 👉 Lê o limite da query string, ou usa 10 como padrão
-//     const limit = parseInt(req.query.limit as string) || 10;
 
-//     const users = await User.find().limit(limit);
-
-//     if (!users || users.length === 0) {
-//       res.status(404).json({ error: "Nenhum usuário encontrado." });
-//       return;
-//     }
-
-//     res.status(200).json(users);
-//   } catch (error) {
-//     console.error("Erro ao buscar usuários:", error);
-//     res.status(500).json({ error: "Erro ao buscar usuários. Tente novamente mais tarde." });
-//   }
-// };
 export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
   try {
     const limitParam = req.query.limit as string;
